@@ -128,14 +128,33 @@ def game_hash
 end
 
 # Write code here
-def get_players
+def get_players team_location = "all"
   player_data = []
   game_hash.each do |location, team_data|
+    if team_location == :home
+      game_hash[:home].each do |attribute, data|
+        if attribute == :players
+          data.each do |data_item|
+            player_data << data_item
+          end
+        end
+      end
+    elsif team_location == :away
+      game_hash[:away].each do |attribute, data|
+
+        if attribute == :players
+          data.each do |data_item|
+            player_data << data_item
+          end
+        end
+      end
     # binding.pry
-    team_data.each do |attribute, data|
-      if attribute == :players
-        data.each do |data_item|
-          player_data << data_item
+    else
+      team_data.each do |attribute, data|
+        if attribute == :players
+          data.each do |data_item|
+            player_data << data_item
+          end
         end
       end
     end
@@ -145,7 +164,6 @@ end
 
 
 def num_points_scored player_name
-  # binding.pry
   data = get_players
   data.each do |data_item|
     if data_item[:player_name] == player_name
@@ -206,19 +224,19 @@ def player_stats player_name
   end
 end
 
-def get_largest_shoe
+def get_max attr
   largest = 0
   players = get_players
   players.each do |player|
-    if player[:shoe] > largest
-      largest = player[:shoe]
+    if player[attr] > largest
+      largest = player[attr]
     end
   end
   return largest
 end
 
 def big_shoe_rebounds
-  largest_shoe = get_largest_shoe
+  largest_shoe = get_max :shoe
   players = get_players
   players.each do |player|
     if player[:shoe] == largest_shoe
@@ -227,7 +245,23 @@ def big_shoe_rebounds
   end
 end
 
+def most_points_scored
+  max_points = get_max :points
+  players = get_players
+  players.each do |player|
+    if player[:points] == max_points
+      return player[:player_name]
+    end
+  end
+end
 
+def winning_team
+  away_players = get_players :away
+  home_players = get_players :home
+  total_away = 0
+  total_home = 0
 
-
-
+  away_players.each do |player|
+    binding.pry
+  end
+end
